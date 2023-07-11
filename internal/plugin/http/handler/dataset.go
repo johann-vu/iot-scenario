@@ -1,13 +1,13 @@
-package http
+package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
-	"time"
 
 	"github.com/go-playground/validator"
-	"github.com/johann-vu/iot-scenario/internal/domain"
 	storedataset "github.com/johann-vu/iot-scenario/internal/domain/storeDataset"
+	"github.com/johann-vu/iot-scenario/internal/plugin/http/dto"
 )
 
 type datasetHandler struct {
@@ -23,20 +23,22 @@ func (dh *datasetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var dto DatasetDTO
-	err := json.NewDecoder(r.Body).Decode(&dto)
+	var d dto.DatasetDTO
+	err := json.NewDecoder(r.Body).Decode(&d)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	err = dh.validate.StructCtx(r.Context(), dto)
+	log.Println(d)
+
+	err = dh.validate.StructCtx(r.Context(), d)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	err = dh.storeService.Execute(r.Context(), dto.ToDomain())
+	err = dh.storeService.Execute(r.Context(), d.ToDomain())
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -47,18 +49,4 @@ func (dh *datasetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func NewDatasetHandler(service storedataset.Service) http.Handler {
 	return &datasetHandler{storeService: service, validate: validator.New()}
-}
-
-type DatasetDTO struct {
-	SensorID      string  `json:"sensorId" validate:"required"`
-	UnixTimestamp int64   `json:"unixTimestamp" validate:"required,gte=0"`
-	Value         float32 `json:"value" validate:"required"`
-}
-
-func (d DatasetDTO) ToDomain() domain.Dataset {
-	return domain.Dataset{
-		SensorID:  d.SensorID,
-		Timestamp: time.Unix(d.UnixTimestamp, 0),
-		Value:     d.Value,
-	}
 }

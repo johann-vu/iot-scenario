@@ -6,8 +6,8 @@ import (
 
 	"github.com/gorilla/mux"
 	storedataset "github.com/johann-vu/iot-scenario/internal/domain/storeDataset"
-	handler "github.com/johann-vu/iot-scenario/internal/http"
-	"github.com/johann-vu/iot-scenario/internal/storage/memory"
+	"github.com/johann-vu/iot-scenario/internal/plugin/http/handler"
+	"github.com/johann-vu/iot-scenario/internal/plugin/storage/memory"
 )
 
 func main() {
