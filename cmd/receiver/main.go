@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	calculatestatistics "github.com/johann-vu/iot-scenario/internal/domain/calculateStatistics"
 	storedataset "github.com/johann-vu/iot-scenario/internal/domain/storeDataset"
 	"github.com/johann-vu/iot-scenario/internal/plugin/http/handler"
 	"github.com/johann-vu/iot-scenario/internal/plugin/storage/sql"
@@ -28,10 +29,12 @@ func main() {
 	}
 
 	storeService := storedataset.NewService(datasetRpository)
+	statisticService := calculatestatistics.NewService(datasetRpository)
 
 	r := mux.NewRouter()
 
 	r.Handle("/results", handler.NewDatasetHandler(storeService))
+	r.Handle("/statistics", handler.NewStatisticHandler(statisticService))
 
 	fmt.Println(http.ListenAndServe(":8080", r))
 }
