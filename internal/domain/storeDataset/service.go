@@ -2,6 +2,7 @@ package storedataset
 
 import (
 	"context"
+	"log"
 
 	"github.com/johann-vu/iot-scenario/internal/domain"
 )
@@ -16,7 +17,15 @@ type service struct {
 
 // Execute implements Service.
 func (srv *service) Execute(ctx context.Context, d domain.Dataset) error {
-	return srv.repository.Add(ctx, d)
+	err := srv.repository.Add(ctx, d)
+
+	if err != nil {
+		log.Printf("error while storing dataset: %v\n", err)
+		return err
+	}
+
+	log.Printf("data from sensor %q was stored successfully", d.SensorID)
+	return nil
 }
 
 func NewService(repository domain.DatasetRepository) Service {

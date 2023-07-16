@@ -9,7 +9,7 @@ import (
 type DatasetDTO struct {
 	SensorID      string  `json:"sensorId" validate:"required"`
 	UnixTimestamp int64   `json:"unixTimestamp" validate:"required,gte=0"`
-	Value         float32 `json:"value" validate:"required"`
+	Value         float64 `json:"value" validate:"required"`
 }
 
 func (d DatasetDTO) ToDomain() domain.Dataset {

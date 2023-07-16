@@ -1,7 +1,7 @@
 package domain
 
 type Statistics struct {
-	Average float32
+	Average float64
 }
 
 type StatisticsCalculator interface {

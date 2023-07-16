@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/go-playground/validator"
@@ -29,8 +28,6 @@ func (dh *datasetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-
-	log.Println(d)
 
 	err = dh.validate.StructCtx(r.Context(), d)
 	if err != nil {
