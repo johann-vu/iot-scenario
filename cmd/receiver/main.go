@@ -1,17 +1,32 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	storedataset "github.com/johann-vu/iot-scenario/internal/domain/storeDataset"
 	"github.com/johann-vu/iot-scenario/internal/plugin/http/handler"
-	"github.com/johann-vu/iot-scenario/internal/plugin/storage/memory"
+	"github.com/johann-vu/iot-scenario/internal/plugin/storage/sql"
+)
+
+var (
+	useMemory        bool
+	connectionString string
+	port             int
 )
 
 func main() {
-	datasetRpository := memory.NewDatasetRepository()
+
+	loadConfig()
+
+	datasetRpository, err := sql.NewDatasetRepository(connectionString)
+	if err != nil {
+		log.Panicf("connecting to database: %v", err)
+	}
+
 	storeService := storedataset.NewService(datasetRpository)
 
 	r := mux.NewRouter()
@@ -19,4 +34,22 @@ func main() {
 	r.Handle("/results", handler.NewDatasetHandler(storeService))
 
 	fmt.Println(http.ListenAndServe(":8080", r))
+}
+
+func loadConfig() {
+
+	flag.StringVar(&connectionString, "connectionString", "", "Connection String to connect to MongoDB")
+	flag.BoolVar(&useMemory, "useMemory", false, "Whether to store data in memory")
+	flag.IntVar(&port, "port", 8080, "The port the receiver is listening on")
+
+	flag.Parse()
+
+	log.Println("Config has been loaded:")
+	log.Printf("Port: \t%d", port)
+	if !useMemory {
+		log.Println("Database: \tSQL")
+		log.Printf("Connection String: \t%v", connectionString)
+	} else {
+		log.Println("Database: \tMemory")
+	}
 }
