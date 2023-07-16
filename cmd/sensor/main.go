@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	senddataset "github.com/johann-vu/iot-scenario/internal/domain/sendDataset"
-	"github.com/johann-vu/iot-scenario/internal/plugin/http/sender"
+	"github.com/johann-vu/iot-scenario/internal/plugin/http"
 )
 
 var (
@@ -22,7 +22,7 @@ func main() {
 	loadConfig()
 
 	generator := senddataset.NewRandomGenerator(maxValue, minValue)
-	sender := sender.NewDataset(receiverURL)
+	sender := http.NewDatasetSender(receiverURL)
 	service := senddataset.NewService(sensorID, generator, sender)
 
 	for {

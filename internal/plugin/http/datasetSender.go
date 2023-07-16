@@ -1,4 +1,4 @@
-package sender
+package http
 
 import (
 	"bytes"
@@ -8,18 +8,17 @@ import (
 	"net/http"
 
 	"github.com/johann-vu/iot-scenario/internal/domain"
-	"github.com/johann-vu/iot-scenario/internal/plugin/http/dto"
 )
 
-type dataset struct {
+type datasetSender struct {
 	targetURL string
 }
 
 const resultEndpoint = "/results"
 
 // Send implements domain.DatasetSender.
-func (ds *dataset) Send(ctx context.Context, d domain.Dataset) error {
-	datasetDTO := dto.DatasetDTO{
+func (ds *datasetSender) Send(ctx context.Context, d domain.Dataset) error {
+	datasetDTO := DatasetDTO{
 		SensorID:      d.SensorID,
 		UnixTimestamp: d.Timestamp.Unix(),
 		Value:         d.Value,
@@ -46,6 +45,6 @@ func (ds *dataset) Send(ctx context.Context, d domain.Dataset) error {
 	return fmt.Errorf("unexpected status code in response: %d (%s)", resp.StatusCode, http.StatusText(resp.StatusCode))
 }
 
-func NewDataset(targetURL string) domain.DatasetSender {
-	return &dataset{targetURL: targetURL}
+func NewDatasetSender(targetURL string) domain.DatasetSender {
+	return &datasetSender{targetURL: targetURL}
 }

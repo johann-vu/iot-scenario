@@ -1,4 +1,4 @@
-package memory
+package storage
 
 import (
 	"context"
@@ -7,22 +7,22 @@ import (
 	"github.com/johann-vu/iot-scenario/internal/domain"
 )
 
-func NewDatasetRepository() domain.DatasetRepository {
-	return &dataset{data: []domain.Dataset{}}
+func NewMemoryDatasetRepository() domain.DatasetRepository {
+	return &memory{data: []domain.Dataset{}}
 }
 
-type dataset struct {
+type memory struct {
 	data []domain.Dataset
 }
 
 // Add implements domain.DatasetRepository.
-func (dr *dataset) Add(ctx context.Context, d domain.Dataset) error {
+func (dr *memory) Add(ctx context.Context, d domain.Dataset) error {
 	dr.data = append(dr.data, d)
 	return nil
 }
 
 // Get implements domain.DatasetRepository.
-func (dr *dataset) Get(ctx context.Context, from time.Time, to time.Time) ([]domain.Dataset, error) {
+func (dr *memory) Get(ctx context.Context, from time.Time, to time.Time) ([]domain.Dataset, error) {
 	result := []domain.Dataset{}
 
 	for _, d := range dr.data {

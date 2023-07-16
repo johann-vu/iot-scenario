@@ -1,4 +1,4 @@
-package sql
+package storage
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type dataset struct {
+type sqlRepo struct {
 	db *gorm.DB
 }
 
-func NewDatasetRepository(connectionString string) (domain.DatasetRepository, error) {
+func NewSQLDatasetRepository(connectionString string) (domain.DatasetRepository, error) {
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
@@ -26,12 +26,12 @@ func NewDatasetRepository(connectionString string) (domain.DatasetRepository, er
 		return nil, fmt.Errorf("auto migrating dataset model %v", err)
 	}
 
-	return &dataset{
+	return &sqlRepo{
 		db: db,
 	}, nil
 }
 
-func (r *dataset) Add(ctx context.Context, d domain.Dataset) error {
+func (r *sqlRepo) Add(ctx context.Context, d domain.Dataset) error {
 
 	err := r.db.Create(newDatasetModel(d)).Error
 	if err != nil {
@@ -40,7 +40,7 @@ func (r *dataset) Add(ctx context.Context, d domain.Dataset) error {
 	return nil
 }
 
-func (dr *dataset) Get(ctx context.Context, from time.Time, to time.Time) ([]domain.Dataset, error) {
+func (dr *sqlRepo) Get(ctx context.Context, from time.Time, to time.Time) ([]domain.Dataset, error) {
 
 	var results []datasetModel
 	err := dr.db.Where("timestamp BETWEEN ? AND ?", from, to).Find(&results).Error

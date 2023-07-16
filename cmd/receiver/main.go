@@ -4,13 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
+	gohttp "net/http"
 
 	"github.com/gorilla/mux"
 	calculatestatistics "github.com/johann-vu/iot-scenario/internal/domain/calculateStatistics"
 	storedataset "github.com/johann-vu/iot-scenario/internal/domain/storeDataset"
-	"github.com/johann-vu/iot-scenario/internal/plugin/http/handler"
-	"github.com/johann-vu/iot-scenario/internal/plugin/storage/sql"
+	"github.com/johann-vu/iot-scenario/internal/plugin/http"
+	"github.com/johann-vu/iot-scenario/internal/plugin/storage"
 )
 
 var (
@@ -23,7 +23,7 @@ func main() {
 
 	loadConfig()
 
-	datasetRpository, err := sql.NewDatasetRepository(connectionString)
+	datasetRpository, err := storage.NewSQLDatasetRepository(connectionString)
 	if err != nil {
 		log.Panicf("connecting to database: %v", err)
 	}
@@ -33,10 +33,10 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.Handle("/results", handler.NewDatasetHandler(storeService))
-	r.Handle("/statistics", handler.NewStatisticHandler(statisticService))
+	r.Handle("/results", http.NewDatasetHandler(storeService))
+	r.Handle("/statistics", http.NewStatisticHandler(statisticService))
 
-	fmt.Println(http.ListenAndServe(":8080", r))
+	fmt.Println(gohttp.ListenAndServe(":8080", r))
 }
 
 func loadConfig() {

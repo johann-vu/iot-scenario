@@ -1,4 +1,4 @@
-package handler
+package http
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-playground/validator"
 	storedataset "github.com/johann-vu/iot-scenario/internal/domain/storeDataset"
-	"github.com/johann-vu/iot-scenario/internal/plugin/http/dto"
 )
 
 type datasetHandler struct {
@@ -22,7 +21,7 @@ func (dh *datasetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var d dto.DatasetDTO
+	var d DatasetDTO
 	err := json.NewDecoder(r.Body).Decode(&d)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
