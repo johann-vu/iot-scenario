@@ -7,4 +7,10 @@ type Statistics struct {
 	Maximum           Dataset
 	Trend             float64
 	Count             int
+	LinearRegression  LinearRegression
+}
+
+type LinearRegression struct {
+	Offset float64
+	Slope  float64
 }

@@ -16,27 +16,36 @@ var (
 	minValue    float64
 	receiverURL string
 	sensorID    string
+	interval    int
+	random      bool
+	wave        bool
 )
 
 func main() {
 	loadConfig()
 
-	generator := senddataset.NewRandomGenerator(maxValue, minValue)
+	generator := senddataset.NewWaveGenerator(maxValue, minValue, 0.1)
+	if random {
+		generator = senddataset.NewRandomGenerator(maxValue, minValue)
+	}
 	sender := http.NewDatasetSender(receiverURL)
 	service := senddataset.NewService(sensorID, generator, sender)
 
 	for {
 		service.Execute(context.Background())
-		time.Sleep(5 * time.Second)
+		time.Sleep(time.Duration(interval) * time.Second)
 	}
 }
 
 func loadConfig() {
 
-	flag.Float64Var(&maxValue, "max", 250, "maximum value the sensor can report")
-	flag.Float64Var(&minValue, "min", -250, "minimum value the sensor can report")
+	flag.Float64Var(&maxValue, "max", 100, "maximum value the sensor can report")
+	flag.Float64Var(&minValue, "min", 0, "minimum value the sensor can report")
 	flag.StringVar(&receiverURL, "url", "http://localhost:8080", "url of the receiver")
 	flag.StringVar(&sensorID, "id", uuid.New().String()[:4], "id of the sensor")
+	flag.IntVar(&interval, "interval", 3, "interval between sending data in seconds")
+	flag.BoolVar(&random, "random", false, "send random values")
+	flag.BoolVar(&wave, "wave", true, "send values following a wave function")
 
 	flag.Parse()
 
@@ -45,5 +54,10 @@ func loadConfig() {
 	log.Printf("Minimum: \t%v", minValue)
 	log.Printf("Receiver: \t%s", receiverURL)
 	log.Printf("ID: \t%s", sensorID)
-
+	log.Printf("Interval: \t%d", interval)
+	if random {
+		log.Println("Mode: \tRandom")
+	} else {
+		log.Println("Mode: \tWave")
+	}
 }

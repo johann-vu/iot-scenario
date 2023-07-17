@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/johann-vu/iot-scenario/internal/domain"
+	"gonum.org/v1/gonum/stat"
 )
 
 func CalculateExtremeValues(data *[]domain.Dataset, result *domain.Statistics) {
@@ -82,4 +83,22 @@ func CalculateTrend(data *[]domain.Dataset, result *domain.Statistics) {
 	slope := (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX)
 
 	result.Trend = slope
+}
+
+func CalculateLinearRegression(data *[]domain.Dataset, result *domain.Statistics) {
+	var (
+		xs      = make([]float64, len(*data))
+		ys      = make([]float64, len(*data))
+		weights []float64
+	)
+
+	for i := range xs {
+		xs[i] = float64((*data)[i].Timestamp.Unix())
+		ys[i] = (*data)[i].Value
+	}
+
+	offset, slope := stat.LinearRegression(xs, ys, weights, false)
+	result.LinearRegression = domain.LinearRegression{
+		Offset: offset, Slope: slope,
+	}
 }

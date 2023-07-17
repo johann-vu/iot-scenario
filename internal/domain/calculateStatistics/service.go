@@ -16,7 +16,7 @@ type service struct {
 type calculateFunc func(*[]domain.Dataset, *domain.Statistics)
 
 var calculations []calculateFunc = []calculateFunc{
-	CalculateAverage, CalculateTrend, CalculateCount, CalculateExtremeValues, CalculateStandardDeviation,
+	CalculateAverage, CalculateCount, CalculateExtremeValues, CalculateStandardDeviation, CalculateLinearRegression,
 }
 
 // Execute implements Service.

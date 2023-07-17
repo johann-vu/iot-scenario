@@ -15,7 +15,6 @@ import (
 )
 
 var (
-	useMemory        bool
 	connectionString string
 	port             int
 )
@@ -46,17 +45,12 @@ func main() {
 func loadConfig() {
 
 	flag.StringVar(&connectionString, "connectionString", "root:mysecretpassword@tcp(localhost:3306)/mydb?parseTime=true", "Connection String to connect to MongoDB")
-	flag.BoolVar(&useMemory, "useMemory", false, "Whether to store data in memory")
 	flag.IntVar(&port, "port", 8080, "The port the receiver is listening on")
 
 	flag.Parse()
 
 	log.Println("Config has been loaded:")
 	log.Printf("Port: \t%d", port)
-	if !useMemory {
-		log.Println("Database: \tSQL")
-		log.Printf("Connection String: \t%v...", connectionString[:7])
-	} else {
-		log.Println("Database: \tMemory")
-	}
+	log.Println("Database: \tSQL")
+	log.Printf("Connection String: \t%v...", connectionString[:7])
 }
