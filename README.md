@@ -5,10 +5,14 @@
 Usage of Receiver:
 ```
   -connectionString string
-        Connection String to connect to MongoDB (default "root:mysecretpassword@tcp(localhost:3306)/mydb?parseTime=true")
+        Connection String to connect to MySQL
   -port int
         The port the receiver is listening on (default 8080)
 ```
+
+Open the dashboard under `/statistics`.
+
+![Screenshot of Dashboard](dashboard.png)
 ## Sensor
 
 Usage of Sensor:
