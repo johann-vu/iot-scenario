@@ -24,33 +24,51 @@
     <div class="page-wrapper">
       <div class="content-wrapper">
         <div class="container-fluid">
+          <div class="content">
+            <h1 class="content-title font-size-22"> <!-- font-size-22 = font-size: 2.2rem (22px) -->
+              Dashboard
+            </h1>
+          </div>
           <div class="row row-eq-spacing">
             <div class="col-6 col-xl-3">
               <div class="card">
                 <h2 class="card-title text-muted">Average</h2>
-                <h1>{{ printf "%.2f" .Average}}</h1>
+                <h1>{{ printf "%.2f" .Average}} °C</h1>
               </div>
             </div>
             <div class="col-6 col-xl-3">
               <div class="card">
-                <h2 class="card-title">Standard Deviation</h2>
-                <h1>{{ printf "%.2f" .StandardDeviation}}</h1>
+                <h2 class="card-title text-muted">Standard Deviation</h2>
+                <h1>{{ printf "%.2f" .StandardDeviation}} °C</h1>
               </div>
             </div>
             <div class="v-spacer d-xl-none"></div>
             <div class="col-6 col-xl-3">
               <div class="card">
-                <h2 class="card-title">Trend</h2>
+                <h2 class="card-title text-muted">Trend</h2>
                 <h1>{{ printf "%.2f" .Trend}}</h1>
               </div>
             </div>
             <div class="col-6 col-xl-3">
               <div class="card">
-                <h2 class="card-title">Count</h2>
+                <h2 class="card-title text-muted">Count</h2>
                 <h1>{{ .Count}}</h1>
               </div>
             </div>
           </div>
+          <div class="row row-eq-spacing">
+            <div class="col-6 col-xl-3">
+              <div class="card">
+                <h2 class="card-title text-muted">Maximum</h2>
+                <h1>{{ printf "%.2f" .Maximum.Value}} °C</h1>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="card">
+                <h2 class="card-title text-muted">Minimum</h2>
+                <h1>{{ printf "%.2f" .Minimum.Value}} °C</h1>
+              </div>
+            </div>
         </div>
       </div>
     </div>
