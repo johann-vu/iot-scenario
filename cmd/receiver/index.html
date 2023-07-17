@@ -26,6 +26,8 @@
         if (urlParams.get("timespan")) {
           let timespan = urlParams.get("timespan");
           document.getElementById("select-timespan").value = parseInt(timespan);
+        } else {
+          document.getElementById("select-timespan").value = 60;
         }
       });
 
