@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"log"
@@ -19,6 +20,9 @@ var (
 	port             int
 )
 
+//go:embed index.html
+var dashboardFile []byte
+
 func main() {
 
 	loadConfig()
@@ -34,7 +38,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.Handle("/results", http.NewDatasetHandler(storeService))
-	r.Handle("/statistics", http.NewStatisticHandler(statisticService))
+	r.Handle("/statistics", http.NewStatisticHandler(statisticService, dashboardFile))
 
 	fmt.Println(gohttp.ListenAndServe(":8080", r))
 }
