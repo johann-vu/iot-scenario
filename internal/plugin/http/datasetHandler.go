@@ -30,7 +30,7 @@ func (dh *datasetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	err = dh.validate.StructCtx(r.Context(), d)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
