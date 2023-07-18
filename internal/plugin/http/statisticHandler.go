@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/johann-vu/iot-scenario/internal/domain"
 	calculatestatistics "github.com/johann-vu/iot-scenario/internal/domain/calculateStatistics"
 )
 
@@ -16,7 +17,6 @@ type statisticHandler struct {
 	dashboardTemplate *template.Template
 }
 
-// ServeHTTP implements http.Handler.
 func (sh *statisticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	timespan := -60 * time.Minute
@@ -35,15 +35,26 @@ func (sh *statisticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if strings.HasPrefix(r.Header.Get("accept"), "text/html") {
-		result.Maximum.Timestamp = result.Maximum.Timestamp.Local()
-		result.Minimum.Timestamp = result.Minimum.Timestamp.Local()
-		for i := 0; i < len(result.Recent); i++ {
-			result.Recent[i].Timestamp = result.Recent[i].Timestamp.Local()
-		}
-		sh.dashboardTemplate.Execute(w, result)
+		sh.handleHTML(w, result)
 		return
 	}
 
+	sh.handleJSON(w, result)
+}
+
+func (sh *statisticHandler) handleHTML(w http.ResponseWriter, result domain.Statistics) {
+	result.Maximum.Timestamp = result.Maximum.Timestamp.Local()
+	result.Minimum.Timestamp = result.Minimum.Timestamp.Local()
+	temp := make([]domain.Dataset, len(result.Recent))
+	for i := 0; i < len(result.Recent); i++ {
+		result.Recent[i].Timestamp = result.Recent[i].Timestamp.Local()
+		temp[len(temp)-i-1] = result.Recent[i]
+	}
+	result.Recent = temp
+	sh.dashboardTemplate.Execute(w, result)
+}
+
+func (sh *statisticHandler) handleJSON(w http.ResponseWriter, result domain.Statistics) {
 	resultDto := StatisticsDTO{
 		Average:           result.Average,
 		StandardDeviation: result.StandardDeviation,
