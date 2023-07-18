@@ -5,9 +5,9 @@ type Statistics struct {
 	StandardDeviation float64
 	Minimum           Dataset
 	Maximum           Dataset
-	Trend             float64
 	Count             int
 	LinearRegression  LinearRegression
+	Recent            []Dataset
 }
 
 type LinearRegression struct {

@@ -35,11 +35,42 @@ func (sh *statisticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if strings.HasPrefix(r.Header.Get("accept"), "text/html") {
+		result.Maximum.Timestamp = result.Maximum.Timestamp.Local()
+		result.Minimum.Timestamp = result.Minimum.Timestamp.Local()
+		for i := 0; i < len(result.Recent); i++ {
+			result.Recent[i].Timestamp = result.Recent[i].Timestamp.Local()
+		}
 		sh.dashboardTemplate.Execute(w, result)
 		return
 	}
 
-	json.NewEncoder(w).Encode(result)
+	resultDto := StatisticsDTO{
+		Average:           result.Average,
+		StandardDeviation: result.StandardDeviation,
+		Minimum: DatasetDTO{
+			SensorID:      result.Minimum.SensorID,
+			UnixTimestamp: result.Minimum.Timestamp.Unix(),
+			Value:         result.Minimum.Value,
+		},
+		Maximum: DatasetDTO{
+			SensorID:      result.Maximum.SensorID,
+			UnixTimestamp: result.Maximum.Timestamp.Unix(),
+			Value:         result.Maximum.Value,
+		},
+		Count:  result.Count,
+		Slope:  result.LinearRegression.Slope,
+		Recent: make([]DatasetDTO, len(result.Recent)),
+	}
+
+	for i := 0; i < len(result.Recent); i++ {
+		resultDto.Recent[i] = DatasetDTO{
+			SensorID:      result.Recent[i].SensorID,
+			UnixTimestamp: result.Recent[i].Timestamp.Unix(),
+			Value:         result.Recent[i].Value,
+		}
+	}
+
+	json.NewEncoder(w).Encode(resultDto)
 }
 
 func NewStatisticHandler(service calculatestatistics.Service, dashboardFile []byte) http.Handler {

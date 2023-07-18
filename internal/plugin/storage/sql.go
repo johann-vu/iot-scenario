@@ -43,7 +43,7 @@ func (r *sqlRepo) Add(ctx context.Context, d domain.Dataset) error {
 func (dr *sqlRepo) Get(ctx context.Context, from time.Time, to time.Time) ([]domain.Dataset, error) {
 
 	var results []datasetModel
-	err := dr.db.Where("timestamp BETWEEN ? AND ?", from, to).Find(&results).Error
+	err := dr.db.Where("timestamp BETWEEN ? AND ?", from, to).Order("timestamp ASC").Find(&results).Error
 	if err != nil {
 		return nil, err
 	}

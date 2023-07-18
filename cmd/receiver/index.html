@@ -109,15 +109,63 @@
           </div>
           <div class="row row-eq-spacing">
             <div class="col-6 col-xl-3">
-              <div class="card">
+              <div class="card h-lg-250">
                 <h2 class="card-title text-muted">Maximum</h2>
                 <h1>{{ printf "%.2f" .Maximum.Value}} °C</h1>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>Time</th>
+                      <td>{{.Maximum.Timestamp.Format "02.01.2006 15:04:05" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Sensor</th>
+                      <td>{{.Maximum.SensorID }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
             <div class="col-6 col-xl-3">
-              <div class="card">
+              <div class="card h-lg-250">
                 <h2 class="card-title text-muted">Minimum</h2>
                 <h1>{{ printf "%.2f" .Minimum.Value}} °C</h1>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>Time</th>
+                      <td>{{.Minimum.Timestamp.Format "02.01.2006 15:04:05" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Sensor</th>
+                      <td>{{.Minimum.SensorID }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="v-spacer d-xl-none"></div>
+            <div class="col-12 col-xl-6">
+              <div class="card h-lg-250 overflow-y-lg-auto">
+                <h2 class="card-title text-muted">Latest Values</h2>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Sensor</th>
+                      <th class="text-right">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{range .Recent}}
+                    <tr>
+                      <td>{{.Timestamp.Format "02.01.2006 15:04:05" }}</td>
+                      <td>{{.SensorID}}</td>
+                      <td class="text-right">{{ printf "%.2f" .Value}} °C</td>
+                    </tr>
+                    {{end}}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

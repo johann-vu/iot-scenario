@@ -64,27 +64,6 @@ func CalculateAverage(data *[]domain.Dataset, result *domain.Statistics) {
 	result.Average = sum / n
 }
 
-func CalculateTrend(data *[]domain.Dataset, result *domain.Statistics) {
-	n := float64(len(*data))
-	if n < 2 {
-		return
-	}
-
-	var sumX, sumY, sumXY, sumX2 float64
-
-	for _, d := range *data {
-		t := float64(d.Timestamp.Unix())
-		sumX += t
-		sumY += d.Value
-		sumXY += t * d.Value
-		sumX2 += math.Pow(t, 2)
-	}
-
-	slope := (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX)
-
-	result.Trend = slope
-}
-
 func CalculateLinearRegression(data *[]domain.Dataset, result *domain.Statistics) {
 	var (
 		xs      = make([]float64, len(*data))
@@ -101,4 +80,14 @@ func CalculateLinearRegression(data *[]domain.Dataset, result *domain.Statistics
 	result.LinearRegression = domain.LinearRegression{
 		Offset: offset, Slope: slope,
 	}
+}
+
+func CalculateRecents(data *[]domain.Dataset, result *domain.Statistics) {
+	l := len(*data)
+	if l <= 10 {
+		result.Recent = *data
+		return
+	}
+
+	result.Recent = (*data)[l-10:]
 }
