@@ -12,7 +12,7 @@ Usage of Receiver:
 
 Open the dashboard under `/statistics`.
 
-![Dashboard](dashboard.png)
+![Dashboard](image.png)
 ## Sensor
 
 Usage of Sensor:
