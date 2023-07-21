@@ -44,7 +44,7 @@ func main() {
 
 func loadConfig() {
 
-	flag.StringVar(&connectionString, "connectionString", "root:mysecretpassword@tcp(localhost:3306)/mydb?parseTime=true", "Connection String to connect to MySQL")
+	flag.StringVar(&connectionString, "connectionString", "", "Connection String to connect to MySQL")
 	flag.IntVar(&port, "port", 8080, "The port the receiver is listening on")
 
 	flag.Parse()
